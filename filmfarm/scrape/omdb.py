@@ -1,14 +1,7 @@
-import re
-import json
+
 import datetime
 import typing
-import os
-from pathlib import Path
 
-import typer
-import requests
-
-app = typer.Typer()
 
 def parse_year(f: str) -> int:
     return int(f.split('–')[0])
@@ -46,23 +39,6 @@ def parse_rating(f: str) -> int:
         r['Value'] = parsers[r['Source']](r['Value'])
     return f
 
-
-def get_env_key(name: str) -> str:
-    """
-    Get an API key from the environment or exit.
-    """
-    if name not in os.environ:
-        raise typer.Exit(f"Missing environment variable {name}")
-    return os.environ[name]
-
-def validate_omdb(response: requests.Response) -> None:
-    """
-    Validate an OMDB response or exit.
-    """
-    response.raise_for_status()
-    if response.json()["Response"] == "False":
-        raise typer.Exit(response.json()["Error"])
-
 _omdb_spec = dict(
     Year = parse_year,
     Runtime = parse_runtime,
@@ -89,9 +65,6 @@ _omdb_spec = dict(
 )
 
 def parse_omdb_json(doc: dict) -> dict:
-    """
-    Parse an OMDB JSON document.
-    """
     for key, mutator in _omdb_spec.items():
         if key not in doc:
             continue
@@ -100,36 +73,3 @@ def parse_omdb_json(doc: dict) -> dict:
         except Exception as error:
             raise ValueError(f"can't process {doc['imdbID']} key {key}: {error}\n")
     return doc
-
-@app.command()
-def omdb(imdb_path: str):
-    """
-    Scrape OMDB metadata for a movie, process it and store in imdb.json.
-    """
-    imdb_path = Path(imdb_path)
-    if not imdb_path.is_dir():
-        raise typer.Exit(f"{imdb_path} is not a valid directory path.")
-
-    imdb_id = imdb_path.name
-    if not re.match(r"tt[0-9]+", imdb_id):
-        raise typer.Exit(f"{imdb_id} is not a valid IMDb ID.")
-
-    if (imdb_path / "imdb.json").is_file():
-        return
-
-    response = requests.get(
-        "http://www.omdbapi.com/",
-        params={
-            "apikey": get_env_key("OMDB_API_KEY"),
-            "i": imdb_id,
-        }
-    )
-    validate_omdb(response)
-    doc = response.json()
-    doc.pop('Response')
-    try:
-        processed = parse_omdb_json(doc)
-    except ValueError as error:
-        raise typer.Exit(str(error))
-    with open(imdb_path / "imdb.json", "w") as handle:
-        json.dump(processed, handle, indent=4)

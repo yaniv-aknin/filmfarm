@@ -1,6 +1,6 @@
 from typing import Any
 import pytest
-from filmfarm.scrape import (
+from filmfarm.scrape.omdb import (
     parse_year,
     parse_list,
     parse_runtime,
@@ -10,7 +10,6 @@ from filmfarm.scrape import (
     parse_rating,
     parse_omdb_json,
 )
-
 
 def test_parse_year():
     assert parse_year("2021") == 2021
