@@ -85,5 +85,29 @@ def tmdb(imdb_path: str):
         raise typer.Exit(f"Multiple results found for IMDB ID {imdb.id}")
     tmdb_id = results[0]['id']
     processed = tmdbsimple.Movies(tmdb_id).info()
+
     with open(imdb.path / "tmdb.json", 'w') as handle:
         json.dump(processed, handle, indent=4)
+
+@app.command()
+def poster(imdb_path: str):
+    """
+    Download the poster image for a movie.
+    """
+    imdb = valid_imdb(imdb_path)
+    if (imdb.path / "poster.jpg").is_file():
+        return
+
+    if not (imdb.path / "imdb.json").is_file():
+        raise typer.Exit("No imdb.json file found")
+    with open(imdb.path / "imdb.json") as handle:
+        imdb_json = json.load(handle)
+
+    poster_url = imdb_json["Poster"]
+    if poster_url == "N/A":
+        raise typer.Exit("No poster available")
+    response = requests.get(poster_url)
+    response.raise_for_status()
+
+    with open(imdb.path / "poster.jpg", "wb") as handle:
+        handle.write(response.content)
