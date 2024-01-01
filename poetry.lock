@@ -320,6 +320,20 @@ files = [
 ]
 
 [[package]]
+name = "tmdbsimple"
+version = "2.9.1"
+description = "A Python wrapper for The Movie Database API v3"
+optional = false
+python-versions = "*"
+files = [
+    {file = "tmdbsimple-2.9.1-py3-none-any.whl", hash = "sha256:b52387c667bad1dccf5f776a576a971622a111fc08b7f731e360fabcc9860616"},
+    {file = "tmdbsimple-2.9.1.tar.gz", hash = "sha256:636eaaaec82027929e8a91c2166e01f552ec63f869bf1fcd65aa561b705c7464"},
+]
+
+[package.dependencies]
+requests = "*"
+
+[[package]]
 name = "tomli"
 version = "2.0.1"
 description = "A lil' TOML parser"
@@ -384,4 +398,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "3df41c5886bb20a64cb360e32aa841e1aee40f2bda7adbb4003e76c516b7c52d"
+content-hash = "339538e6df788934c62c36c9f856aee2d5e8c9f3aed89bac51955834b44801c8"

@@ -12,6 +12,7 @@ filmfarm = "filmfarm.main:app"
 python = "^3.10"
 typer = {extras = ["all"], version = "^0.9.0"}
 requests = "^2.31.0"
+tmdbsimple = "^2.9.1"
 
 
 [tool.poetry.group.test.dependencies]

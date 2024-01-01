@@ -6,6 +6,7 @@ from pathlib import Path
 
 import typer
 import requests
+import tmdbsimple
 
 from .omdb import parse_omdb_json
 
@@ -63,4 +64,26 @@ def omdb(imdb_path: str):
         raise typer.Exit(str(error))
     
     with open(imdb.path / "imdb.json", "w") as handle:
+        json.dump(processed, handle, indent=4)
+
+@app.command()
+def tmdb(imdb_path: str):
+    """
+    Scrape TMDB metadata for a movie, process it and store in tmdb.json.
+    """
+    tmdbsimple.API_KEY = get_env_key("TMDB_API_KEY")
+
+    imdb = valid_imdb(imdb_path)
+    if (imdb.path / "tmdb.json").is_file():
+        return
+
+    search = tmdbsimple.Find(imdb.id)
+    results = search.info(external_source='imdb_id')['movie_results']
+    if not results:
+        raise typer.Exit(f"No results found for IMDB ID {imdb.id}")
+    if len(results) > 1:
+        raise typer.Exit(f"Multiple results found for IMDB ID {imdb.id}")
+    tmdb_id = results[0]['id']
+    processed = tmdbsimple.Movies(tmdb_id).info()
+    with open(imdb.path / "tmdb.json", 'w') as handle:
         json.dump(processed, handle, indent=4)
