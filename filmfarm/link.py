@@ -7,9 +7,15 @@ from . import abort
 app = typer.Typer()
 
 
+def relative_symlink(source: Path, target: Path):
+    common_path = os.path.commonpath([source, target])
+    prefix = "../" * len(source.parent.relative_to(common_path).parts)
+    relative_target = prefix / target.relative_to(common_path)
+    source.symlink_to(relative_target)
+
+
 def yield_symlink_pairs(blobs_path: Path):
-    for movie_id in blobs_path.iterdir():
-        movie_dir = blobs_path / movie_id
+    for movie_dir in blobs_path.iterdir():
         metadata_file = movie_dir / "imdb.json"
         if not metadata_file.is_file():
             continue
@@ -30,7 +36,7 @@ def movies(blobs_path: str, target_path: str):
     target_dir.mkdir(parents=True)
 
     for movie_dir, symlink_name in yield_symlink_pairs(Path(blobs_path)):
-        (target_dir / symlink_name).symlink_to(movie_dir)
+        relative_symlink(target_dir / symlink_name, movie_dir)
 
 
 def group_collections(imdb_path: Path) -> dict:
@@ -73,6 +79,6 @@ def collections(imdb_dir: str, collections_dir: str):
             continue
         for movie_id, symlink_name in collections[collection]:
             (collections_dir_path / collection).mkdir(parents=True, exist_ok=True)
-            (collections_dir_path / collection / symlink_name).symlink_to(
-                imdb_path / movie_id
+            relative_symlink(
+                collections_dir_path / collection / symlink_name, imdb_path / movie_id
             )

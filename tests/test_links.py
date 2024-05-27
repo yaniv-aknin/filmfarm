@@ -1,5 +1,16 @@
 from pathlib import Path
-from filmfarm.link import group_collections, yield_symlink_pairs
+from filmfarm.link import group_collections, yield_symlink_pairs, relative_symlink
+
+
+def test_relative_symlink(tmpdir):
+    source = (Path(tmpdir) / "spam" / "eggs" / "bacon" / "source").resolve()
+    target = (Path(tmpdir) / "foo" / "bar" / "baz" / "target").resolve()
+    source.parent.mkdir(parents=True)
+    target.parent.mkdir(parents=True)
+    relative_symlink(source, target)
+    assert source.is_symlink()
+    assert source.resolve() == target
+    assert str(source.readlink()) == "../../../foo/bar/baz/target"
 
 
 def test_yield_symlink_pairs(tmpdir_with_blobs):
