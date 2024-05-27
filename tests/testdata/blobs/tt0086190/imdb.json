@@ -1,0 +1,61 @@
+{
+    "Title": "Star Wars: Episode VI - Return of the Jedi",
+    "Year": 1983,
+    "Rated": "PG",
+    "Released": "1983-05-25",
+    "Runtime": 131,
+    "Genre": [
+        "Action",
+        "Adventure",
+        "Fantasy"
+    ],
+    "Director": [
+        "Richard Marquand"
+    ],
+    "Writer": [
+        "Lawrence Kasdan",
+        "George Lucas"
+    ],
+    "Actors": [
+        "Mark Hamill",
+        "Harrison Ford",
+        "Carrie Fisher"
+    ],
+    "Plot": "After rescuing Han Solo from Jabba the Hutt, the Rebels attempt to destroy the second Death Star, while Luke struggles to help Darth Vader back from the dark side.",
+    "Language": [
+        "English",
+        "Kikuyu",
+        "Tagalog",
+        "Kalmyk-Oirat",
+        "Quechua",
+        "Polish"
+    ],
+    "Country": [
+        "United States"
+    ],
+    "Awards": "Nominated for 4 Oscars. 24 wins & 23 nominations total",
+    "Poster": "https://m.media-amazon.com/images/M/MV5BOWZlMjFiYzgtMTUzNC00Y2IzLTk1NTMtZmNhMTczNTk0ODk1XkEyXkFqcGdeQXVyNTAyODkwOQ@@._V1_SX300.jpg",
+    "Ratings": [
+        {
+            "Source": "Internet Movie Database",
+            "Value": 83
+        },
+        {
+            "Source": "Rotten Tomatoes",
+            "Value": 83
+        },
+        {
+            "Source": "Metacritic",
+            "Value": 58
+        }
+    ],
+    "Metascore": 58,
+    "imdbRating": 8.3,
+    "imdbVotes": 1116149,
+    "imdbID": "tt0086190",
+    "Type": "movie",
+    "DVD": "2015-04-10",
+    "BoxOffice": 316566101,
+    "Production": null,
+    "Website": null
+}

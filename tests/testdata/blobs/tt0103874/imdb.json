@@ -1,0 +1,61 @@
+{
+    "Title": "Bram Stoker's Dracula",
+    "Year": 1992,
+    "Rated": "R",
+    "Released": "1992-11-13",
+    "Runtime": 128,
+    "Genre": [
+        "Drama",
+        "Fantasy",
+        "Horror"
+    ],
+    "Director": [
+        "Francis Ford Coppola"
+    ],
+    "Writer": [
+        "Bram Stoker",
+        "James V. Hart"
+    ],
+    "Actors": [
+        "Gary Oldman",
+        "Winona Ryder",
+        "Anthony Hopkins"
+    ],
+    "Plot": "The centuries old vampire Count Dracula comes to England to seduce his barrister Jonathan Harker's fianc\u00e9e Mina Murray and inflict havoc in the foreign land.",
+    "Language": [
+        "English",
+        "Romanian",
+        "Greek",
+        "Bulgarian",
+        "Latin"
+    ],
+    "Country": [
+        "United Kingdom",
+        "United States"
+    ],
+    "Awards": "Won 3 Oscars. 25 wins & 25 nominations total",
+    "Poster": "https://m.media-amazon.com/images/M/MV5BNjcyMDZlMTktYTIxOC00ZWFhLWJkYzgtNWNiYjAwYTFkNjIyXkEyXkFqcGdeQXVyNTIzOTk5ODM@._V1_SX300.jpg",
+    "Ratings": [
+        {
+            "Source": "Internet Movie Database",
+            "Value": 74
+        },
+        {
+            "Source": "Rotten Tomatoes",
+            "Value": 78
+        },
+        {
+            "Source": "Metacritic",
+            "Value": 57
+        }
+    ],
+    "Metascore": 57,
+    "imdbRating": 7.4,
+    "imdbVotes": 237147,
+    "imdbID": "tt0103874",
+    "Type": "movie",
+    "DVD": "2013-07-01",
+    "BoxOffice": 82522790,
+    "Production": null,
+    "Website": null
+}

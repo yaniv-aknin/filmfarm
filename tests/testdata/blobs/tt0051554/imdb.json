@@ -1,0 +1,55 @@
+{
+    "Title": "Horror of Dracula",
+    "Year": 1958,
+    "Rated": "Not Rated",
+    "Released": "1958-06-16",
+    "Runtime": 82,
+    "Genre": [
+        "Drama",
+        "Horror"
+    ],
+    "Director": [
+        "Terence Fisher"
+    ],
+    "Writer": [
+        "Jimmy Sangster",
+        "Bram Stoker"
+    ],
+    "Actors": [
+        "Peter Cushing",
+        "Christopher Lee",
+        "Michael Gough"
+    ],
+    "Plot": "When Jonathan Harker rouses the ire of Count Dracula for accepting a job at the vampire's castle under false pretenses, his friend Dr. Van Helsing pursues the predatory villain.",
+    "Language": [
+        "English"
+    ],
+    "Country": [
+        "United Kingdom"
+    ],
+    "Awards": "1 win & 2 nominations",
+    "Poster": "https://m.media-amazon.com/images/M/MV5BMDhmYjgyMmEtYjMzNS00MmM5LTkxY2QtMzY0ODFjODEyMWFmXkEyXkFqcGdeQXVyMzg1ODEwNQ@@._V1_SX300.jpg",
+    "Ratings": [
+        {
+            "Source": "Internet Movie Database",
+            "Value": 72
+        },
+        {
+            "Source": "Rotten Tomatoes",
+            "Value": 91
+        },
+        {
+            "Source": "Metacritic",
+            "Value": 67
+        }
+    ],
+    "Metascore": 67,
+    "imdbRating": 7.2,
+    "imdbVotes": 27881,
+    "imdbID": "tt0051554",
+    "Type": "movie",
+    "DVD": "2010-10-18",
+    "BoxOffice": null,
+    "Production": null,
+    "Website": null
+}
