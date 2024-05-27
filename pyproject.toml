@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "filmfarm"
-version = "0.1.0"
+version = "1.0.0"
 description = "A toolkit to manage movie collections."
 authors = ["Yaniv Aknin <yaniv@aknin.name>"]
 readme = "README.md"
