@@ -3,6 +3,7 @@ import re
 import json
 import os
 from pathlib import Path
+import dotenv
 
 import typer
 import requests
@@ -18,6 +19,7 @@ def get_env_key(name: str) -> str:
     """
     Get an API key from the environment or exit.
     """
+    dotenv.load_dotenv()
     if name not in os.environ:
         raise typer.Exit(f"Missing environment variable {name}")
     return os.environ[name]

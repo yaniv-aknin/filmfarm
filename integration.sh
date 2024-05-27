@@ -8,8 +8,10 @@ star_wars="tt0076759 tt0080684 tt0086190"
 
 echo "📋 Checking requirements"
 [ -x "$(which filmfarm)" ] || { echo "  👉 filmfarm not installed" ; exit 1 ; }
-[ "$TMDB_API_KEY" ] || { echo "  👉 TMDB_API_KEY not set" && exit 1 ; }
-[ "$OMDB_API_KEY" ] || { echo "  👉 OMDB_API_KEY not set" && exit 1 ; }
+if [ ! -f .env ]; then
+    [ "$TMDB_API_KEY" ] || { echo "  👉 TMDB_API_KEY not set" && exit 1 ; }
+    [ "$OMDB_API_KEY" ] || { echo "  👉 OMDB_API_KEY not set" && exit 1 ; }
+fi
 
 echo "🧪 Clearing old test data"
 TEST_DIR="/tmp/filmfarm.test.d"
