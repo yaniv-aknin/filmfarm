@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 import dotenv
+import typing as t
 
 import typer
 import requests
@@ -27,11 +28,10 @@ def get_env_key(name: str) -> str:
     return os.environ[name]
 
 
-def valid_imdb(imdb_path: str | Path) -> IMDB:
+def valid_imdb(imdb_path: Path) -> IMDB:
     """
     Validate IMDb path and return a namedtuple with path and ID.
     """
-    imdb_path = Path(imdb_path)
     if not imdb_path.is_dir():
         abort(f"{imdb_path} is not a valid directory path.")
 
@@ -43,7 +43,11 @@ def valid_imdb(imdb_path: str | Path) -> IMDB:
 
 
 @app.command(name="omdb")
-def omdb_(imdb_path: str):
+def omdb_(
+    imdb_path: t.Annotated[
+        Path, typer.Argument(exists=True, dir_okay=True, file_okay=False)
+    ],
+):
     """
     Scrape OMDB metadata for a movie, process it and store in imdb.json.
     """
@@ -74,7 +78,11 @@ def omdb_(imdb_path: str):
 
 
 @app.command()
-def tmdb(imdb_path: str):
+def tmdb(
+    imdb_path: t.Annotated[
+        Path, typer.Argument(exists=True, dir_okay=True, file_okay=False)
+    ],
+):
     """
     Scrape TMDB metadata for a movie, process it and store in tmdb.json.
     """
@@ -98,7 +106,11 @@ def tmdb(imdb_path: str):
 
 
 @app.command()
-def poster(imdb_path: str):
+def poster(
+    imdb_path: t.Annotated[
+        Path, typer.Argument(exists=True, dir_okay=True, file_okay=False)
+    ],
+):
     """
     Download the poster image for a movie.
     """
