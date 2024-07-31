@@ -56,6 +56,14 @@ def group_collections(blobs: Path) -> dict:
     return collections
 
 
+def symlink_group(
+    target: Path, blobs: Path, group: str, members: list[tuple[str, str]]
+):
+    for movie_id, name in members:
+        (target / group).mkdir(parents=True, exist_ok=True)
+        relative_symlink(target / group / name, blobs / movie_id)
+
+
 @app.command()
 def collections(
     blobs: t.Annotated[
@@ -73,6 +81,58 @@ def collections(
     for collection in collections:
         if len(collections[collection]) <= 1:
             continue
-        for movie_id, symlink_name in collections[collection]:
-            (target / collection).mkdir(parents=True, exist_ok=True)
-            relative_symlink(target / collection / symlink_name, blobs / movie_id)
+        symlink_group(target, blobs, collection, collections[collection])
+
+
+@app.command()
+def by_year(
+    blobs: t.Annotated[
+        Path, typer.Argument(exists=True, dir_okay=True, file_okay=False)
+    ],
+    target: t.Annotated[Path, typer.Argument(exists=False)],
+):
+    """
+    Link movie directories by year, then name.
+    """
+    target.mkdir(parents=True)
+
+    years = {}
+    for blob in Blob.iterate_from_dir(
+        blobs, predicate=lambda b: isinstance(b.imdb.get("Year"), int)
+    ):
+        metadata = blob.imdb
+        symlink_name = f"{metadata["Title"]}".replace("/", "_")
+        years.setdefault(str(metadata["Year"]), []).append((blob.id, symlink_name))
+
+    for year in years:
+        symlink_group(target, blobs, year, years[year])
+
+
+@app.command()
+def by_rating(
+    blobs: t.Annotated[
+        Path, typer.Argument(exists=True, dir_okay=True, file_okay=False)
+    ],
+    target: t.Annotated[Path, typer.Argument(exists=False)],
+):
+    """
+    Link movie directories by imdb rating, then year and name.
+    """
+    target.mkdir(parents=True)
+
+    ratings = {}
+    for blob in Blob.iterate_from_dir(
+        blobs, predicate=lambda b: isinstance(b.imdb.get("imdbRating"), float)
+    ):
+        metadata = blob.imdb
+        title = metadata["Title"]
+        year = str(metadata["Year"])
+        if not (len(year) == 4) and year.isdigit():
+            continue
+        symlink_name = f"{year}. {title}".replace("/", "_")
+        ratings.setdefault(str(metadata["imdbRating"]), []).append(
+            (blob.id, symlink_name)
+        )
+
+    for rating in ratings:
+        symlink_group(target, blobs, rating, ratings[rating])

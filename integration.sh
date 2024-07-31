@@ -41,4 +41,7 @@ filmfarm link collections "$TEST_DIR/blobs" "$TEST_DIR/collection"
 [ -d "$TEST_DIR/collection/Star Wars" ]
 [ $(find "$TEST_DIR/collection/Star Wars" -type l | wc -l) -eq 3 ]
 
+filmfarm link by-year "$TEST_DIR/blobs" "$TEST_DIR/by-year"
+[ -L "$TEST_DIR/by-year/1922/Nosferatu" ]
+
 echo "✅ All tests passed"
