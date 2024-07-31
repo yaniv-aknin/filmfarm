@@ -42,3 +42,11 @@ def test_blob_iteration(tmpdir_with_blobs):
         "Star Wars: Episode V - The Empire Strikes Back",
         "Star Wars: Episode VI - Return of the Jedi",
     }
+
+    titles = {
+        b.imdb["Title"]
+        for b in Blob.iterate_from_dir(
+            tmpdir_with_blobs, predicate=lambda blob: blob.id.endswith("9")
+        )
+    }
+    assert titles == {"Star Wars: Episode IV - A New Hope"}

@@ -97,20 +97,18 @@ def poster(
     """
     Download the poster image for a movie.
     """
-    imdb = blob_or_abort(imdb_path)
-    if (imdb.path / "poster.jpg").is_file():
+    blob = blob_or_abort(imdb_path)
+    if blob.has("poster.jpg"):
         return
+    try:
+        metadata = blob.imdb
+    except IOError:
+        abort(f"No imdb.json in {blob}")
 
-    if not (imdb.path / "imdb.json").is_file():
-        abort(f"No imdb.json file found in {imdb.path}")
-    with open(imdb.path / "imdb.json") as handle:
-        imdb_json = json.load(handle)
-
-    poster_url = imdb_json["Poster"]
+    poster_url = metadata["Poster"]
     if poster_url == "N/A":
-        abort(f"No poster available for {imdb.id}")
+        abort(f"No poster available for {blob}")
     response = requests.get(poster_url)
     response.raise_for_status()
 
-    with open(imdb.path / "poster.jpg", "wb") as handle:
-        handle.write(response.content)
+    (blob.path / "poster.jpg").write_bytes(response.content)

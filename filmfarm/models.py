@@ -10,6 +10,12 @@ class Blob:
     def __init__(self, path: Path):
         self.path = Path(path)
 
+    def __str__(self) -> str:
+        return self.id
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__name__} {self.path}>"
+
     def load_json(self, name: str) -> dict:
         try:
             return json.loads((self.path / name).read_text())
@@ -17,12 +23,6 @@ class Blob:
             raise LookupError(f"no {name} for {self.path}") from error
         except json.JSONDecodeError as error:
             raise ValueError(f"invalid {name} for {self.path}") from error
-
-    def __str__(self) -> str:
-        return self.id
-
-    def __repr__(self) -> str:
-        return f"<{self.__class__.__name__} {self.path}>"
 
     @property
     def id(self) -> str:
@@ -42,6 +42,9 @@ class Blob:
             raise LookupError(f"no poster for {self.path}")
         return self.path / "poster.jpg"
 
+    def has(self, filename):
+        return (self.path / filename).exists()
+
     @classmethod
     def from_dir(cls, dir: Path | str) -> "Blob":
         dir = Path(dir)
@@ -52,12 +55,21 @@ class Blob:
         return cls(dir)
 
     @classmethod
-    def iterate_from_dir(cls, dir: str | Path) -> t.Iterable["Blob"]:
+    def iterate_from_dir(
+        cls,
+        dir: str | Path,
+        errors: t.Literal["ignore", "raise"] = "ignore",
+        predicate: t.Callable[["Blob"], bool] = lambda x: True,
+    ) -> t.Iterable["Blob"]:
         for blob_path in Path(dir).iterdir():
             try:
-                yield cls.from_dir(blob_path)
+                blob = cls.from_dir(blob_path)
+                if predicate(blob):
+                    yield blob
             except (IOError, ValueError):
-                continue
+                if errors == "ignore":
+                    continue
+                raise
 
 
 def blob_or_abort(imdb_path: Path) -> Blob:
