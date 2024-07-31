@@ -1,20 +1,18 @@
-from collections import namedtuple
-import re
 import json
 import os
 from pathlib import Path
 import dotenv
+import typing as t
 
 import typer
 import requests
 import tmdbsimple
 
 from .omdb import parse_omdb_json
+from ..models import blob_or_abort
 from .. import abort
 
 app = typer.Typer()
-
-IMDB = namedtuple("IMDB", ["path", "id"])
 
 
 def get_env_key(name: str) -> str:
@@ -27,27 +25,16 @@ def get_env_key(name: str) -> str:
     return os.environ[name]
 
 
-def valid_imdb(imdb_path: str | Path) -> IMDB:
-    """
-    Validate IMDb path and return a namedtuple with path and ID.
-    """
-    imdb_path = Path(imdb_path)
-    if not imdb_path.is_dir():
-        abort(f"{imdb_path} is not a valid directory path.")
-
-    imdb_id = imdb_path.name
-    if not re.match(r"tt[0-9]+", imdb_id):
-        abort(f"{imdb_id} is not a valid IMDb ID.")
-
-    return IMDB(imdb_path, imdb_id)
-
-
 @app.command(name="omdb")
-def omdb_(imdb_path: str):
+def omdb_(
+    imdb_path: t.Annotated[
+        Path, typer.Argument(exists=True, dir_okay=True, file_okay=False)
+    ],
+):
     """
     Scrape OMDB metadata for a movie, process it and store in imdb.json.
     """
-    imdb = valid_imdb(imdb_path)
+    imdb = blob_or_abort(imdb_path)
     if (imdb.path / "imdb.json").is_file():
         return
 
@@ -74,13 +61,17 @@ def omdb_(imdb_path: str):
 
 
 @app.command()
-def tmdb(imdb_path: str):
+def tmdb(
+    imdb_path: t.Annotated[
+        Path, typer.Argument(exists=True, dir_okay=True, file_okay=False)
+    ],
+):
     """
     Scrape TMDB metadata for a movie, process it and store in tmdb.json.
     """
     tmdbsimple.API_KEY = get_env_key("TMDB_API_KEY")
 
-    imdb = valid_imdb(imdb_path)
+    imdb = blob_or_abort(imdb_path)
     if (imdb.path / "tmdb.json").is_file():
         return
 
@@ -98,24 +89,26 @@ def tmdb(imdb_path: str):
 
 
 @app.command()
-def poster(imdb_path: str):
+def poster(
+    imdb_path: t.Annotated[
+        Path, typer.Argument(exists=True, dir_okay=True, file_okay=False)
+    ],
+):
     """
     Download the poster image for a movie.
     """
-    imdb = valid_imdb(imdb_path)
-    if (imdb.path / "poster.jpg").is_file():
+    blob = blob_or_abort(imdb_path)
+    if blob.has("poster.jpg"):
         return
+    try:
+        metadata = blob.imdb
+    except IOError:
+        abort(f"No imdb.json in {blob}")
 
-    if not (imdb.path / "imdb.json").is_file():
-        abort(f"No imdb.json file found in {imdb.path}")
-    with open(imdb.path / "imdb.json") as handle:
-        imdb_json = json.load(handle)
-
-    poster_url = imdb_json["Poster"]
+    poster_url = metadata["Poster"]
     if poster_url == "N/A":
-        abort(f"No poster available for {imdb.id}")
+        abort(f"No poster available for {blob}")
     response = requests.get(poster_url)
     response.raise_for_status()
 
-    with open(imdb.path / "poster.jpg", "wb") as handle:
-        handle.write(response.content)
+    (blob.path / "poster.jpg").write_bytes(response.content)
