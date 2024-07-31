@@ -1,5 +1,3 @@
-from collections import namedtuple
-import re
 import json
 import os
 from pathlib import Path
@@ -11,11 +9,10 @@ import requests
 import tmdbsimple
 
 from .omdb import parse_omdb_json
+from ..models import blob_or_abort
 from .. import abort
 
 app = typer.Typer()
-
-IMDB = namedtuple("IMDB", ["path", "id"])
 
 
 def get_env_key(name: str) -> str:
@@ -28,20 +25,6 @@ def get_env_key(name: str) -> str:
     return os.environ[name]
 
 
-def valid_imdb(imdb_path: Path) -> IMDB:
-    """
-    Validate IMDb path and return a namedtuple with path and ID.
-    """
-    if not imdb_path.is_dir():
-        abort(f"{imdb_path} is not a valid directory path.")
-
-    imdb_id = imdb_path.name
-    if not re.match(r"tt[0-9]+", imdb_id):
-        abort(f"{imdb_id} is not a valid IMDb ID.")
-
-    return IMDB(imdb_path, imdb_id)
-
-
 @app.command(name="omdb")
 def omdb_(
     imdb_path: t.Annotated[
@@ -51,7 +34,7 @@ def omdb_(
     """
     Scrape OMDB metadata for a movie, process it and store in imdb.json.
     """
-    imdb = valid_imdb(imdb_path)
+    imdb = blob_or_abort(imdb_path)
     if (imdb.path / "imdb.json").is_file():
         return
 
@@ -88,7 +71,7 @@ def tmdb(
     """
     tmdbsimple.API_KEY = get_env_key("TMDB_API_KEY")
 
-    imdb = valid_imdb(imdb_path)
+    imdb = blob_or_abort(imdb_path)
     if (imdb.path / "tmdb.json").is_file():
         return
 
@@ -114,7 +97,7 @@ def poster(
     """
     Download the poster image for a movie.
     """
-    imdb = valid_imdb(imdb_path)
+    imdb = blob_or_abort(imdb_path)
     if (imdb.path / "poster.jpg").is_file():
         return
 
