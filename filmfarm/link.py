@@ -1,9 +1,10 @@
 import os
-import json
 from pathlib import Path
 import typing as t
 
 import typer
+
+from .models import Blob
 
 app = typer.Typer()
 
@@ -15,15 +16,11 @@ def relative_symlink(source: Path, target: Path):
     source.symlink_to(relative_target)
 
 
-def yield_symlink_pairs(blobs_path: Path):
-    for movie_dir in blobs_path.iterdir():
-        metadata_file = movie_dir / "imdb.json"
-        if not metadata_file.is_file():
-            continue
-        with open(metadata_file) as f:
-            metadata = json.load(f)
+def yield_symlink_pairs(blobs: Path):
+    for blob in Blob.iterate_from_dir(blobs, predicate=lambda b: b.has("imdb.json")):
+        metadata = blob.imdb
         symlink_name = f"{metadata['Title']} ({metadata['Year']})".replace("/", "_")
-        yield movie_dir, symlink_name
+        yield blob.path, symlink_name
 
 
 @app.command()
@@ -44,12 +41,8 @@ def movies(
 
 def group_collections(blobs: Path) -> dict:
     collections = {}
-    for movie_dir in blobs.iterdir():
-        metadata_file = movie_dir / "tmdb.json"
-        if not metadata_file.is_file():
-            continue
-        with open(metadata_file) as handle:
-            metadata = json.load(handle)
+    for blob in Blob.iterate_from_dir(blobs, predicate=lambda b: b.has("imdb.json")):
+        metadata = blob.tmdb
         if not metadata["belongs_to_collection"]:
             continue
         collection = metadata["belongs_to_collection"]["name"]
@@ -59,7 +52,7 @@ def group_collections(blobs: Path) -> dict:
         title = metadata["title"]
         year = metadata["release_date"].split("-")[0]
         symlink_name = f"{year}. {title}".replace("/", "_")
-        collections[collection].append((movie_dir.name, symlink_name))
+        collections[collection].append((blob.id, symlink_name))
     return collections
 
 

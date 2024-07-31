@@ -14,9 +14,7 @@ def test_relative_symlink(tmpdir):
 
 
 def test_yield_symlink_pairs(tmpdir_with_blobs):
-    symlinks = [
-        (d.name, s) for d, s in yield_symlink_pairs(Path(tmpdir_with_blobs) / "blobs")
-    ]
+    symlinks = [(d.name, s) for d, s in yield_symlink_pairs(Path(tmpdir_with_blobs))]
     assert symlinks == [
         ("tt0829150", "Dracula Untold (2014)"),
         ("tt0013442", "Nosferatu (1922)"),
@@ -30,7 +28,7 @@ def test_yield_symlink_pairs(tmpdir_with_blobs):
 
 
 def test_group_collections(tmpdir_with_blobs):
-    groups = group_collections(Path(tmpdir_with_blobs) / "blobs")
+    groups = group_collections(Path(tmpdir_with_blobs))
     multi = {k: v for k, v in groups.items() if len(v) > 1}
     assert multi == {
         "Star Wars": [

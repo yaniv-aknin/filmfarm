@@ -24,4 +24,4 @@ def tt13238346_omdb_processed():
 @pytest.fixture
 def tmpdir_with_blobs(tmpdir):
     shutil.copytree(testdata / "blobs", tmpdir / "blobs")
-    return tmpdir
+    return Path(tmpdir / "blobs")
