@@ -101,7 +101,7 @@ def by_year(
         blobs, predicate=lambda b: isinstance(b.imdb.get("Year"), int)
     ):
         metadata = blob.imdb
-        symlink_name = f"{metadata["Title"]}".replace("/", "_")
+        symlink_name = f'{metadata["Title"]}'.replace("/", "_")
         years.setdefault(str(metadata["Year"]), []).append((blob.id, symlink_name))
 
     for year in years:
