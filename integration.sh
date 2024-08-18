@@ -34,14 +34,14 @@ filmfarm scrape poster "$TEST_DIR/blobs/$x" ; [ -f "$TEST_DIR/blobs/$x/poster.jp
 echo "🔗 Creating linkfarm"
 filmfarm link movies "$TEST_DIR/blobs" "$TEST_DIR/movies"
 [ $(find "$TEST_DIR/movies" -type l | wc -l) -eq 8 ]
-[ -L "$TEST_DIR/movies/Nosferatu (1922)" ]
-grep -q Nosferatu "$TEST_DIR/movies/Nosferatu (1922)/imdb.json"
+[ -L "$TEST_DIR/movies/Nosferatu: A Symphony of Horror (1922)" ]
+grep -q Nosferatu "$TEST_DIR/movies/Nosferatu: A Symphony of Horror (1922)/imdb.json"
 
 filmfarm link collections "$TEST_DIR/blobs" "$TEST_DIR/collection"
 [ -d "$TEST_DIR/collection/Star Wars" ]
 [ $(find "$TEST_DIR/collection/Star Wars" -type l | wc -l) -eq 3 ]
 
 filmfarm link by-year "$TEST_DIR/blobs" "$TEST_DIR/by-year"
-[ -L "$TEST_DIR/by-year/1922/Nosferatu" ]
+[ -L "$TEST_DIR/by-year/1922/Nosferatu: A Symphony of Horror" ]
 
 echo "✅ All tests passed"
